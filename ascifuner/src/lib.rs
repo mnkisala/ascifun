@@ -10,6 +10,15 @@ pub struct AscifyConfig {
 
 #[wasm_bindgen]
 impl AscifyConfig {
+    #[wasm_bindgen(constructor)]
+    pub fn new(ramp: String, inverse_ramp: bool, columns: u32) -> Self {
+        Self {
+            ramp,
+            inverse_ramp,
+            columns,
+        }
+    }
+
     #[wasm_bindgen(getter)]
     pub fn ramp(&self) -> String {
         self.ramp.clone()
@@ -23,6 +32,8 @@ impl AscifyConfig {
 
 #[wasm_bindgen]
 pub fn ascify(data: String, config: AscifyConfig) -> String {
+    console_error_panic_hook::set_once();
+
     let raw = base64::decode(&data).unwrap();
     let img = image::load_from_memory(&raw).unwrap();
 
@@ -54,5 +65,5 @@ pub fn ascify(data: String, config: AscifyConfig) -> String {
         output.push('\n');
     }
 
-    todo!()
+    output
 }

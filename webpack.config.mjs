@@ -31,10 +31,13 @@ export default {
     port: 9000,
   },
   plugins: [
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title: "ascifun",
+    }),
     new WasmPackPlugin({
       crateDirectory: path.resolve(__dirname, "./ascifuner"),
       outDir: path.resolve(__dirname, "./ascifuner/pkg"),
+      forceMode: "production",
     }),
   ],
   experiments: {

@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import "./style/index.scss";
-import { ascify } from "../ascifuner/pkg/index";
+import { ascify, AscifyConfig } from "../ascifuner/pkg/index";
 
 import { createSignal } from "solid-js";
 
@@ -13,14 +13,11 @@ function App() {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb2GJhj2pL0ucqdr5niq0YbS6phdjDy95scMKQmk6K5Q&s"
   ).then((req) =>
     req.arrayBuffer().then((buf) => {
-      console.log("dupa");
       setAscii(
-        ascify(Buffer.from(buf).toString("base64"), {
-          ramp: "",
-          inverse_ramp: false,
-          columns: 80,
-          free: () => {},
-        })
+        ascify(
+          Buffer.from(buf).toString("base64"),
+          new AscifyConfig("@#1=1", false, 80)
+        )
       );
     })
   );
