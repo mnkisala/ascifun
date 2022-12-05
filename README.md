@@ -1,5 +1,5 @@
-# clore
+# ascifun
 
-An open story driven code exercise platform (also it's blazingly lightweight and ultra fast or whatever).
+have fun with generating ascii art
 
-_coming soon?_
+https://mnkisala.github.io/ascifun/
