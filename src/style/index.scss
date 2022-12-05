@@ -25,3 +25,28 @@ body {
   background-color: #222;
   color: #eee;
 }
+
+.config {
+  padding: 3em;
+  display: flex;
+  flex-direction: column;
+}
+
+.config__block {
+  display: flex;
+  justify-content: space-between;
+
+  input {
+    flex: 2 1 200px;
+  }
+
+  label {
+    flex: 1 1 100px;
+  }
+}
+
+.output {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
