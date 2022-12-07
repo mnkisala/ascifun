@@ -50,19 +50,20 @@ pub fn ascify(data: String, config: AscifyConfig) -> String {
 
     let mut output = String::with_capacity((width as usize + 1) * height as usize);
 
-    for y in 0..height {
-        for x in 0..height {
-            let pixel = img.get_pixel(x, y);
-            let luma = pixel.to_luma().0[0];
+    for (x, y, _) in img.pixels() {
+        let pixel = img.get_pixel(x, y);
+        let luma = pixel.to_luma().0[0];
 
-            let ramp_len = ramp.len();
-            let index = (luma as f32 / 255.0) * ramp_len as f32;
-            let index = index as usize % ramp_len;
+        let ramp_len = ramp.len();
+        let index = (luma as f32 / 255.0) * ramp_len as f32;
+        let index = index as usize % ramp_len;
 
-            let c = ramp.chars().nth(index).unwrap();
-            output.push(c);
+        let c = ramp.chars().nth(index).unwrap();
+        output.push(c);
+
+        if x == img.width() - 1 {
+            output.push('\n');
         }
-        output.push('\n');
     }
 
     output
