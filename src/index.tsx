@@ -2,7 +2,7 @@ import { render } from "solid-js/web";
 import "./style/index.scss";
 import { ascify, AscifyConfig } from "../ascifuner/pkg/index";
 
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, For } from "solid-js";
 
 import { Buffer } from "buffer";
 
@@ -23,14 +23,43 @@ function Input({ name, displayName, type, forward }) {
   );
 }
 
-function ConfigPanel({ setAscii, fontSize, setFontSize }) {
+function CoolRadioButtons({ active, setActive, options }) {
+  return (
+    <div class="cool_radio_buttons__container">
+      <For each={options}>
+        {(option: any) => (
+          <button
+            class={`cool_radio_buttons__button ${
+              option.key == active() && "cool_radio_buttons__button-active"
+            }`}
+            value={option.key}
+            onclick={(e: any) => setActive(e.target.value)}
+          >
+            {option.name}
+          </button>
+        )}
+      </For>
+    </div>
+  );
+}
+
+function ConfigPanel({
+  setAscii,
+  colorMode,
+  setColorMode,
+  fontSize,
+  setFontSize,
+}) {
   const [ramp, setRamp] = createSignal("@%#*+=-:. ");
-  const [columns, setColumns] = createSignal(40);
-  const [invert, setInvert] = createSignal(true);
+  const [columns, setColumns] = createSignal(80);
   const [file, setFile] = createSignal(null);
 
   createEffect(() => {
-    const conf = new AscifyConfig(ramp(), invert(), columns());
+    setFontSize((1 / columns()) * 600); // TOOD: proper auto resize formula
+  });
+
+  createEffect(() => {
+    const conf = new AscifyConfig(ramp(), colorMode() == "dark", columns());
     if (file()) {
       const reader = new FileReader();
       reader.readAsArrayBuffer(file());
@@ -79,15 +108,22 @@ function ConfigPanel({ setAscii, fontSize, setFontSize }) {
           },
         }}
       />
-      <Input
-        type="checkbox"
-        name="invert"
-        displayName="Invert"
-        forward={{
-          checked: invert(),
-          onchange: (e: any) => setInvert(e.currentTarget.checked),
-        }}
+
+      <CoolRadioButtons
+        active={colorMode}
+        setActive={(e) => setColorMode(e)}
+        options={[
+          {
+            key: "dark",
+            name: "dark",
+          },
+          {
+            key: "light",
+            name: "light",
+          },
+        ]}
       />
+
       <Input
         type="number"
         name="fontsize"
@@ -116,18 +152,21 @@ function Logo() {
 
 function App() {
   const [ascii, setAscii] = createSignal("");
-  const [fontSize, setFontSize] = createSignal(12);
+  const [fontSize, setFontSize] = createSignal(8);
+  const [colorMode, setColorMode] = createSignal("dark");
 
   return (
     <>
       <div class="app-container">
         <Logo />
         <ConfigPanel
+          colorMode={colorMode}
+          setColorMode={setColorMode}
           setAscii={setAscii}
           fontSize={fontSize}
           setFontSize={setFontSize}
         />
-        <div class="output__container">
+        <div class={`output__container output__container-${colorMode()}`}>
           <div class="output__output" style={`font-size: ${fontSize()}px;`}>
             <pre>
               <code innerHTML={ascii() || "preview"}></code>

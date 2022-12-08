@@ -39,9 +39,9 @@ pub fn ascify(data: String, config: AscifyConfig) -> String {
 
     let ratio = img.width() as f32 / img.height() as f32;
     let width = config.columns.min(img.width());
-    let height = (width as f32 * ratio) as u32;
+    let height = (width as f32 * ratio * 0.55) as u32; // TODO: something better for scaling height
 
-    let img = img.resize(width, height, image::imageops::FilterType::Gaussian);
+    let img = img.resize_exact(width, height, image::imageops::FilterType::Gaussian);
     let ramp = if !config.inverse_ramp {
         config.ramp
     } else {

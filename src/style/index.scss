@@ -70,12 +70,55 @@ body {
     overflow: auto;
     display: flex;
     flex-direction: column;
+    font-weight: 900;
 
     @include blockiness();
+
+    &-dark {
+      background-color: #181818;
+      color: #fff;
+    }
+
+    &-light {
+      background-color: #ddd;
+      color: #000;
+    }
   }
 
   &__output {
     margin: auto;
+  }
+}
+
+.cool_radio_buttons {
+  &__container {
+    background-color: pink;
+
+    border-radius: 0.5em;
+    overflow: hidden;
+
+    display: flex;
+
+    margin: 5px;
+  }
+
+  &__button {
+    padding: 10px;
+    flex: 1;
+
+    border: none;
+
+    &-active {
+      background-color: #b29;
+      color: #efefef;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: #907;
+      color: #fff;
+      font-weight: 800;
+    }
   }
 }
 
