@@ -108,6 +108,20 @@ function ConfigPanel({
           },
         }}
       />
+      <Input
+        type="number"
+        name="fontsize"
+        displayName="Preview font size"
+        forward={{
+          value: fontSize(),
+          oninput: (e: any) => setFontSize(Math.max(1, e.target.value)),
+          onchange: (e: any) => {
+            if (e.target.value != "") {
+              e.target.value = Math.max(1, e.target.value);
+            }
+          },
+        }}
+      />
 
       <CoolRadioButtons
         active={colorMode}
@@ -122,21 +136,6 @@ function ConfigPanel({
             name: "light",
           },
         ]}
-      />
-
-      <Input
-        type="number"
-        name="fontsize"
-        displayName="Preview font size"
-        forward={{
-          value: fontSize(),
-          oninput: (e: any) => setFontSize(Math.max(1, e.target.value)),
-          onchange: (e: any) => {
-            if (e.target.value != "") {
-              e.target.value = Math.max(1, e.target.value);
-            }
-          },
-        }}
       />
     </div>
   );
