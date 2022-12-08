@@ -6,7 +6,24 @@ import { createEffect, createSignal } from "solid-js";
 
 import { Buffer } from "buffer";
 
-function ConfigPanel({ setAscii }) {
+function Input({ name, displayName, type, forward }) {
+  return (
+    <div class="input__container">
+      <label class="input__label" for={name}>
+        {displayName || name}
+      </label>
+      <input
+        class="input__input"
+        type={type}
+        name={name}
+        id={name}
+        {...forward}
+      />
+    </div>
+  );
+}
+
+function ConfigPanel({ setAscii, fontSize, setFontSize }) {
   const [ramp, setRamp] = createSignal("@%#*+=-:. ");
   const [columns, setColumns] = createSignal(40);
   const [invert, setInvert] = createSignal(true);
@@ -22,7 +39,6 @@ function ConfigPanel({ setAscii }) {
         const content_b64 = Buffer.from(content as ArrayBuffer).toString(
           "base64"
         );
-        console.log(content_b64);
         setAscii(ascify(content_b64, conf));
       };
     }
@@ -30,73 +46,96 @@ function ConfigPanel({ setAscii }) {
 
   return (
     <div class="config">
-      <div class="config__block">
-        <label for="file">file</label>
-        <input
-          type="file"
-          id="file"
-          accept="image/jpeg,image/png"
-          onchange={(e) => {
-            setFile(e.target.files[0]);
-          }}
-        />
-      </div>
-
-      <div class="config__block">
-        <label for="ramp">ramp</label>
-        <input
-          type="text"
-          id="ramp"
-          value={ramp()}
-          oninput={(e) => {
-            setRamp(e.currentTarget.value);
-            console.log(ramp());
-          }}
-        />
-      </div>
-
-      <div class="config__block">
-        <label for="columns">columns</label>
-        <input
-          type="number"
-          id="columns"
-          value={columns()}
-          oninput={(e) => {
-            const input = e.currentTarget.value;
-            if (input == "") {
-              setColumns(1);
-            } else {
-              setColumns(Math.max(parseInt(input), 1));
+      <Input
+        type="file"
+        name="file"
+        displayName="Input file"
+        forward={{
+          accept: "image/jpeg,image/png",
+          onchange: (e: any) => setFile(e.target.files[0]),
+        }}
+      />
+      <Input
+        type="text"
+        name="ramp"
+        displayName="Character ramp"
+        forward={{
+          value: ramp(),
+          oninput: (e: any) => setRamp(e.target.value),
+        }}
+      />
+      <Input
+        type="number"
+        name="columns"
+        displayName="Columns"
+        forward={{
+          value: columns(),
+          oninput: (e: any) => setColumns(Math.max(1, e.target.value)),
+          min: "1",
+          onchange: (e: any) => {
+            if (e.target.value != "") {
+              e.target.value = Math.max(1, e.target.value);
             }
-          }}
-        />
-      </div>
+          },
+        }}
+      />
+      <Input
+        type="checkbox"
+        name="invert"
+        displayName="Invert"
+        forward={{
+          checked: invert(),
+          onchange: (e: any) => setInvert(e.currentTarget.checked),
+        }}
+      />
+      <Input
+        type="number"
+        name="fontsize"
+        displayName="Preview font size"
+        forward={{
+          value: fontSize(),
+          oninput: (e: any) => setFontSize(Math.max(1, e.target.value)),
+          onchange: (e: any) => {
+            if (e.target.value != "") {
+              e.target.value = Math.max(1, e.target.value);
+            }
+          },
+        }}
+      />
+    </div>
+  );
+}
 
-      <div class="config__block">
-        <label for="invert">invert</label>
-        <input
-          type="checkbox"
-          id="invert"
-          checked={invert()}
-          onchange={(e) => setInvert(e.currentTarget.checked)}
-        />
-      </div>
+function Logo() {
+  return (
+    <div class="logo__container">
+      <h1 class="logo__header">ascifun</h1>
     </div>
   );
 }
 
 function App() {
   const [ascii, setAscii] = createSignal("");
+  const [fontSize, setFontSize] = createSignal(12);
 
   return (
-    <div class="app-container">
-      <ConfigPanel setAscii={setAscii} />
-      <div class="output">
-        <pre>
-          <code innerHTML={ascii() || "loading..."}></code>
-        </pre>
+    <>
+      <div class="app-container">
+        <Logo />
+        <ConfigPanel
+          setAscii={setAscii}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+        />
+        <div class="output__container">
+          <div class="output__output" style={`font-size: ${fontSize()}px;`}>
+            <pre>
+              <code innerHTML={ascii() || "preview"}></code>
+            </pre>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
